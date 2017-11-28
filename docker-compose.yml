@@ -1,0 +1,29 @@
+version: "2"
+
+services:
+  mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - "mysql_data:/var/lib/mysql"
+      - ".:/app"
+  activiti:
+    image: xjimmyshcn/activiti:latest
+    ports:
+      - 8888:8080
+    volumes:
+      - "./config/db.properties:/opt/tomcat/webapps/activiti-rest/WEB-INF/classes/db.properties"
+      - "./config/db.properties:/opt/tomcat/webapps/activiti-explorer/WEB-INF/classes/db.properties"
+      - "./config/explorer.engine.properties:/opt/tomcat/webapps/activiti-rest/WEB-INF/classes/engine.properties"
+      - "./config/rest.engine.properties:/opt/tomcat/webapps/activiti-explorer/WEB-INF/classes/engine.properties"
+    depends_on:
+      - mysql
+
+networks:
+  default:
+    external:
+      name: default-network
+
+volumes:
+  mysql_data:
